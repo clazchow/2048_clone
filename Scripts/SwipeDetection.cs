@@ -16,7 +16,7 @@ public class SwipeDetection : MonoBehaviour {
 			print(posDiff);
 			if (posDiff.y > 225){
 				print("UP");
-				SendMessage("AddRandomTile");
+				SendMessage("MoveToUp");
 			} else if (posDiff.y < -225){
 				print ("DOWN");
 				SendMessage("AddRandomTile");
@@ -25,7 +25,7 @@ public class SwipeDetection : MonoBehaviour {
 				SendMessage("AddRandomTile");
 			} else if (posDiff.x < -225){
 				print("LEFT");
-				SendMessage("AddRandomTile");
+				SendMessage("MoveToLeft");
 			}
 		}
 	}
