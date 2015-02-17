@@ -19,14 +19,18 @@ public class SwipeDetection : MonoBehaviour {
 				SendMessage("MoveToUp");
 			} else if (posDiff.y < -225){
 				print ("DOWN");
-				SendMessage("AddRandomTile");
+				SendMessage("MoveToDown");
 			} else if (posDiff.x > 225){
 				print("RIGHT");
-				SendMessage("AddRandomTile");
+				SendMessage("MoveToRight");
 			} else if (posDiff.x < -225){
 				print("LEFT");
 				SendMessage("MoveToLeft");
 			}
+		}
+
+		if (Input.GetKeyDown("r")){
+			SendMessage ("AddRandomTile");
 		}
 	}
 //		void Update () {

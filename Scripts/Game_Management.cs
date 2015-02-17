@@ -8,11 +8,9 @@ public class Game_Management : MonoBehaviour {
 	public int[,] Area;
 	public int gridX, gridY;
 	public int currentTileAmount = 0;
+	private RaycastHit2D realTarget;
 	private static Vector3 horizontalRay = new Vector3(0.51f, 0, 0);
 	private static Vector3 verticalRay = new Vector3(0, .51f, 0);
-	private static Vector3 test = new Vector3(1, 0, 0);
-	private static Vector3 test2 = new Vector3(3, 0, 0);
-	private static Vector3 test3 = new Vector3(0, 0, 0);
 	
 	private enum game_State {
 		invalid_state = -1,
@@ -32,12 +30,7 @@ public class Game_Management : MonoBehaviour {
 	}
 
 	void Start () {
-		Area [1, 0] = 1;
-		Area [3, 0] = 1;
-		//Area [0, 0] = 1;
-		GameObject obj = Instantiate(tile, test, transform.rotation) as GameObject;
-		GameObject obj2 = Instantiate(tile, test2, transform.rotation) as GameObject;
-		//GameObject obj3 = Instantiate(tile, test3, transform.rotation) as GameObject;
+
 	}
 		
 	void Update () {
@@ -58,15 +51,22 @@ public class Game_Management : MonoBehaviour {
 	}
 
 	private GameObject GetObjectAtGridPosition(int x, int y) {
-		GameObject target;
+//		RaycastHit2D hit = Physics2D.Raycast(GridToWorldPoint (x, y), -Vector2.right, 0.05f);
+//		if (hit.collider.tag == "Tile") {
+//			return hit.collider.gameObject;
+//		} else {
+//			throw new UnityException("Unable to find gameObject at" +x+","+y);
+//		}
 		RaycastHit2D[] hits = Physics2D.RaycastAll(GridToWorldPoint (x, y), -Vector2.right, 0.05f);
-		foreach (RaycastHit2D hit in hits){
-			if (hit.collider.tag == "Tile") {
-				return hit.collider.gameObject;
-			} else {
-			throw new UnityException("Unable to find gameObject at" +x+","+y);
+		foreach (RaycastHit2D hit in hits) {
+			if (hit.collider.tag == "Tile"){
+				realTarget = hit;
 			}
-
+		}
+		if (realTarget != null) {
+			return realTarget.collider.gameObject;
+		} else {
+			throw new UnityException("Unable to find gameObject at" +x+","+y);
 		}
 	}
 
@@ -135,7 +135,34 @@ public class Game_Management : MonoBehaviour {
 	}
 
 	void MoveToDown(){
-		
+		for (int x = 0; x < gridX; x++) { // from down to up
+			for (int y = 1; y < gridY; y++){
+				if (Area[x, y] == 0){
+					Debug.Log("not found at "+x+","+y);
+					continue;
+				}
+				bool stopped = false;
+				GameObject thisTile = GetObjectAtGridPosition(x,y);
+				while(!stopped){
+					RaycastHit2D hit = Physics2D.Raycast (thisTile.transform.position - verticalRay, -Vector2.up, 0.1f);
+					if (hit) {
+						if(hit.collider.tag == "Tile"){
+							print ("Down is Occupied");
+							stopped = true;
+						} else if (hit.collider.tag == "Grid"){
+							print ("nothing downwards");
+							Vector3 targetPosDif = new Vector3(0, 1, 0);
+							Area[FloatToInt(thisTile.transform.position.x), FloatToInt(thisTile.transform.position.y)] = 0;
+							thisTile.transform.position -= targetPosDif;
+							Area[FloatToInt(thisTile.transform.position.x), FloatToInt(thisTile.transform.position.y)] = 1;
+						}
+					} else {
+						print ("Arrived Position");
+						stopped = true;
+					}
+				}
+			}
+		}
 	}
 
 	void MoveToLeft(){
@@ -170,6 +197,33 @@ public class Game_Management : MonoBehaviour {
 	}
 
 	void MoveToRight(){
-		
+		for (int x = gridX - 1; x >= 0; x--) { // from right to left
+			for (int y = 0; y < gridY; y++){
+				if (Area[x, y] == 0){
+					Debug.Log("not found at "+x+","+y);
+					continue;
+				}
+				bool stopped = false;
+				GameObject thisTile = GetObjectAtGridPosition(x,y);
+				while(!stopped){
+					RaycastHit2D hit = Physics2D.Raycast (thisTile.transform.position + horizontalRay, Vector2.right, 0.1f);
+					if (hit) {
+						if(hit.collider.tag == "Tile"){
+							print ("Right is Occupied");
+							stopped = true;
+						} else if (hit.collider.tag == "Grid"){
+							print ("nothing at right");
+							Vector3 targetPosDif = new Vector3(1, 0, 0);
+							Area[FloatToInt(thisTile.transform.position.x), FloatToInt(thisTile.transform.position.y)] = 0;
+							thisTile.transform.position += targetPosDif;
+							Area[FloatToInt(thisTile.transform.position.x), FloatToInt(thisTile.transform.position.y)] = 1;
+						}
+					} else {
+						print ("Arrived Position");
+						stopped = true;
+					}
+				}
+			}
+		}
 	}
 }
