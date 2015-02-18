@@ -8,6 +8,7 @@ public class Game_Management : MonoBehaviour {
 	public int[,] Area;
 	public int gridX, gridY;
 	public int currentTileAmount = 0;
+	public int score;
 	private RaycastHit2D realTarget;
 	private static Vector3 horizontalRay = new Vector3(0.51f, 0, 0);
 	private static Vector3 verticalRay = new Vector3(0, .51f, 0);
@@ -79,7 +80,6 @@ public class Game_Management : MonoBehaviour {
 				Destroy(Tile);
 			}
 		}
-		//int id = Random.Range (1, 4);
 		int x = Random.Range (0, gridX);
 		int y = Random.Range (0, gridY);
 		bool exist = false; // boolean checker to see if there is already a tile
@@ -117,7 +117,13 @@ public class Game_Management : MonoBehaviour {
 					if (hit) {
 						if(hit.collider.tag == "Tile"){
 							print ("Up is Occupied");
-							stopped = true;
+							Tile nextTile = hit.collider.gameObject.GetComponent<Tile>();
+							Tile currentTile = thisTile.GetComponent<Tile>();
+							if (currentTile.value == nextTile.value && nextTile.hasMerged == false && currentTile.hasMerged == false){
+								MergeTiles(thisTile, hit.collider.gameObject);
+							} else {
+								stopped = true;
+							}
 						} else if (hit.collider.tag == "Grid"){
 							print ("nothing upwards");
 							Vector3 targetPosDif = new Vector3(0, 1, 0);
@@ -148,7 +154,13 @@ public class Game_Management : MonoBehaviour {
 					if (hit) {
 						if(hit.collider.tag == "Tile"){
 							print ("Down is Occupied");
-							stopped = true;
+							Tile nextTile = hit.collider.gameObject.GetComponent<Tile>();
+							Tile currentTile = thisTile.GetComponent<Tile>();
+							if (currentTile.value == nextTile.value && nextTile.hasMerged == false && currentTile.hasMerged == false){
+								MergeTiles(thisTile, hit.collider.gameObject);
+							} else {
+								stopped = true;
+							}
 						} else if (hit.collider.tag == "Grid"){
 							print ("nothing downwards");
 							Vector3 targetPosDif = new Vector3(0, 1, 0);
@@ -179,7 +191,13 @@ public class Game_Management : MonoBehaviour {
 					if (hit) {
 						if(hit.collider.tag == "Tile"){
 							print ("Left is Occupied");
-							stopped = true;
+							Tile nextTile = hit.collider.gameObject.GetComponent<Tile>();
+							Tile currentTile = thisTile.GetComponent<Tile>();
+							if (currentTile.value == nextTile.value && nextTile.hasMerged == false && currentTile.hasMerged == false){
+								MergeTiles(thisTile, hit.collider.gameObject);
+							} else {
+								stopped = true;
+							}
 						} else if (hit.collider.tag == "Grid"){
 							print ("nothing at left");
 							Vector3 targetPosDif = new Vector3(1, 0, 0);
@@ -210,7 +228,13 @@ public class Game_Management : MonoBehaviour {
 					if (hit) {
 						if(hit.collider.tag == "Tile"){
 							print ("Right is Occupied");
-							stopped = true;
+							Tile nextTile = hit.collider.gameObject.GetComponent<Tile>();
+							Tile currentTile = thisTile.GetComponent<Tile>();
+							if (currentTile.value == nextTile.value && nextTile.hasMerged == false && currentTile.hasMerged == false){
+								MergeTiles(thisTile, hit.collider.gameObject);
+							} else {
+								stopped = true;
+							}
 						} else if (hit.collider.tag == "Grid"){
 							print ("nothing at right");
 							Vector3 targetPosDif = new Vector3(1, 0, 0);
@@ -225,5 +249,19 @@ public class Game_Management : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	void MergeTiles(GameObject thisTile, GameObject thatTile){
+		Area[FloatToInt(thisTile.transform.position.x), FloatToInt(thisTile.transform.position.y)] = 0;
+		Destroy (thisTile);
+		Tile nextTile = thatTile.GetComponent<Tile> ();
+		nextTile.value = nextTile.value * 2;
+		score += nextTile.value;
+		nextTile.hasMerged = true;
+		currentTileAmount -= 1;
+	}
+
+	bool GameOverCheck(){
+		return false;
 	}
 }

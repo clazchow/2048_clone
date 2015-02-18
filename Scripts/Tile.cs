@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Tile : MonoBehaviour {
 	public int id;
-	public int value = 2;
+	public int value;
+	public bool hasMerged;
 
 	// Use this for initialization
 	void Start () {
@@ -13,5 +14,9 @@ public class Tile : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	void OnGUI(){
+
 	}
 }
