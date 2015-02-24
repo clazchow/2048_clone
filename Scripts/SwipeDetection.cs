@@ -28,35 +28,8 @@ public class SwipeDetection : MonoBehaviour {
 				SendMessage("MoveToLeft");
 			}
 		}
-
-		if (Input.GetKeyDown("r")){
-			SendMessage ("AddRandomTile");
-		}
-	}
-//		void Update () {
-//		if (Input.touchCount > 0) {
-//			print("touching");
-//			Touch touch = Input.GetMouseButtonDown(0);
-//
-//			switch (touch.phase){
-//
-//			case TouchPhase.Began:
-//				initialPos = touch.position;
-//				break;
-//
-//			case TouchPhase.Ended:
-//				float swipeDistVert = (new Vector3(0, touch.position.y, 0) - new Vector3(0, initialPos.y, 0)).magnitude;
-//				if (swipeDistVert > minSwipeDistY){
-//					float swipeValue = Mathf.Sign(touch.position.y - initialPos.y);
-//					if (swipeValue > 0){
-//						Debug.Log("UP");
-//					} else if (swipeValue < 0){
-//						Debug.Log("Down");
-//					}
-//				}
-//				break;
-//			}
+//		if(Input.GetKeyDown("r")){
+//			SendMessage("AddRandomTile");
 //		}
-//	}
-
+	}
 }
